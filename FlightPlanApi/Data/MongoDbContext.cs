@@ -68,7 +68,7 @@ namespace FlightPlanApi.Data
             return flightPlan ?? (new());
         }
 
-        public async Task<bool> AddFileFlightPlan(FlightPlan flightPlan)
+        public async Task<TransactionResult> AddFileFlightPlan(FlightPlan flightPlan)
         {
             var collection = GetCollection("pluralsight", "flight_plans");
 
@@ -94,17 +94,20 @@ namespace FlightPlanApi.Data
             try
             {
                 await collection.InsertOneAsync(document);
+                if (document["_id"].IsObjectId)
+                {
+                    return TransactionResult.Success;
+                }
+
+                return TransactionResult.BadRequest;
             }
             catch
             {
-                return false;
+                return TransactionResult.ServerError;
             }
-
-            return true;
-
         }
 
-        public async Task<bool> UpdateFlightPlan(string flightPlanId, FlightPlan flightPlan)
+        public async Task<TransactionResult> UpdateFlightPlan(string flightPlanId, FlightPlan flightPlan)
         {
             var collection = GetCollection("pluralsight", "flight_plans");
             var filter = Builders<BsonDocument>.Filter.Eq("flight_plan_id", flightPlanId);
@@ -125,7 +128,15 @@ namespace FlightPlanApi.Data
                 .Set("numberOnBoard", flightPlan.NumberOnBoard);
             var result = await collection.UpdateOneAsync(filter, update);
 
-            return result.ModifiedCount > 0;
+            if (result.MatchedCount.Equals(0))
+            {
+                return TransactionResult.NotFound;
+            }
+            if (result.ModifiedCount > 0)
+            {
+                return TransactionResult.Success;
+            }
+            return TransactionResult.ServerError;
         }
 
         public async Task<bool> DeleteFlightPlanById(string flightPlanId)
