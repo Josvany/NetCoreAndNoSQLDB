@@ -1,6 +1,7 @@
 ﻿using Amazon.Runtime.Internal.Transform;
 using FlightPlanApi.Data;
 using FlightPlanApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,13 +12,14 @@ namespace FlightPlanApi.Controllers
     [ApiController]
     public class FlightPlanController : ControllerBase
     {
-        private IDatabaseAdapter _database;
+        private readonly IDatabaseAdapter _database;
 
         public FlightPlanController(IDatabaseAdapter database)
         {
             _database = database;
         }
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> FlightPlanList()
         {
             var flightPlanList = await _database.GetAllFlightPlans();
