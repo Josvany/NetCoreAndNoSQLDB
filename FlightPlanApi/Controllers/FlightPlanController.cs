@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FlightPlanApi.Data;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlightPlanApi.Controllers
@@ -7,5 +8,11 @@ namespace FlightPlanApi.Controllers
     [ApiController]
     public class FlightPlanController : ControllerBase
     {
+        private IDatabaseAdapter _database;
+
+        public FlightPlanController(IDatabaseAdapter database)
+        {
+            _database = database;
+        }
     }
 }
