@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Authentication\" />
     <Folder Include="JsonDB\" />
     <Folder Include="Models\" />
   </ItemGroup>
