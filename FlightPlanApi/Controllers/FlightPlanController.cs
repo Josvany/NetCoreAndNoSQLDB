@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Net;
 
 namespace FlightPlanApi.Controllers
 {
@@ -20,6 +22,7 @@ namespace FlightPlanApi.Controllers
         }
         [HttpGet]
         [Authorize]
+        [SwaggerResponse((int)HttpStatusCode.NoContent, "No flight plans have been filed with this system")]
         public async Task<IActionResult> FlightPlanList()
         {
             var flightPlanList = await _database.GetAllFlightPlans();
